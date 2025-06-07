@@ -92,3 +92,28 @@ def test_for_metadata(mock_create):
 
     # email
     assert kwargs["metadata"]["business_email"] == "info@shinydental.com"
+
+# Test 4: Check that the 3 payment methods work 
+@patch("services.stripe_processor.stripe.checkout.Session.create")
+def test_checkout_supports_payment_methods(mock_create):
+    mock_create.return_value.url = "https://checkout.stripe.com/test_session"
+
+    invoice = {
+        "amount_due": "199.00",
+        "description_of_service": "Dental exam",
+        "business_name": "Pearl Dental",
+        "customer_name": "Chris Park",
+        "invoice_number": "INV_199",
+        "business_email": "admin@pearldental.com",
+        "customer_email": "chris@example.com",
+    }
+
+    create_checkout_session(invoice)
+
+    _, kwargs = mock_create.call_args
+
+    # check payent methods include card, affirm and klarna
+    assert set(kwargs["payment_method_types"]) == {"card", "affirm", "klarna"}
+
+    # check if it works
+    print("Payment methods passed to Stripe:", kwargs["payment_method_types"])
