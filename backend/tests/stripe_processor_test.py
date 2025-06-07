@@ -3,9 +3,14 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from services.stripe_processor import create_checkout_session
+from unittest.mock import patch
 
 
-def test_create_checkout_session():
+@patch("services.stripe_processor.stripe.checkout.Session.create")
+def test_create_checkout_session(mock_create):
+    mock_create.return_value.url = "https://checkout.stripe.com/test_session"
+
+    # test using input fields needed
     invoice = {
         "amount_due": "300.00",
         "description_of_service": "Filling cavity",
@@ -16,6 +21,9 @@ def test_create_checkout_session():
         "customer_email": "john@example.com",
     }
 
+    # calls the function but reminder is a mock
     session_url = create_checkout_session(invoice)
+
+    # assertions
     assert session_url is not None
-    assert session_url.startswith("https:checkout.stripe.com/")
+    assert session_url.startswith("https://checkout.stripe.com/")
