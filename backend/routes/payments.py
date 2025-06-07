@@ -1,7 +1,7 @@
 
 from flask import Blueprint, request, jsonify
-from services.stripe_processor import create_checkout_session
-from models import Invoice, db
+from ..services.stripe_processor import create_checkout_session
+from ..models import Invoice, db
 import logging
 
 logger = logging.getLogger(__name__)
@@ -33,12 +33,7 @@ def handle_create_checkout():
 
             db.session.add(invoice)
             db.session.commit()
-
-            # check if the invoice is duplicated
-            existing = Invoice.query.filter_by(invoice_number=invoice_data['invoice_number']).first()
-            if existing:
-                return jsonify({'error': 'Invoice already exists'}), 400            
-
+            
             return jsonify({'checkout_url': session_url}), 200
         else:
             return jsonify({'error': "Failed to create checkout session"}), 500

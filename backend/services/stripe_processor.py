@@ -2,7 +2,7 @@
 
 import stripe
 import logging
-from config import Config
+from ..config import Config
 
 # Secret key
 stripe.api_key = Config.STRIPE_API_KEY

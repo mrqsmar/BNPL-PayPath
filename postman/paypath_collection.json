@@ -1,0 +1,73 @@
+{
+	"info": {
+		"_postman_id": "fc69f3de-bcb3-4a7e-b974-dac6f877f189",
+		"name": "Payment Link in DB",
+		"description": "Post the Invoice on the URL and fetch the invoice and payment info",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44378507"
+	},
+	"item": [
+		{
+			"name": "Invoice & Payment Info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/api/invoices/INV_777",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"invoices",
+						"INV_777"
+					]
+				}
+			},
+			"response": ["business_name": "PayPath Dental",
+            "customer_email": "test@example.com",
+            "customer_name": "Test User",
+            "description_of_service": "Root Canal",
+            "invoice_number": "INV_777",
+            "payment_link": "https://checkout.stripe.com/c/pay/cs_test_a1bO9pFXEGfych4ueKcCdZoHY0CefK0JjqAeCV3qCmMx3FMlbDbpKvdOXd#fidkdWxOYHwnPyd1blpxYHZxWjA0V1JuVzdXVV1iUXZWRFVXTGRpVkxrV3JXNXEwRmdUc31LNDdHfXRjTE13UkE9TE51aF9UTEZrTHxHc1Nif0BMbGlrVDIxYUFHNzB%2Fdm91cF9AQ2BJfE5wNTVOaTY1VmZDQycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl"
+        }]
+		},
+		{
+			"name": "Create a Stripe Checkout Session",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"invoice_number\": \"INV_777\",\n  \"customer_name\": \"Test User\",\n  \"customer_email\": \"test@example.com\",\n  \"description_of_service\": \"Root Canal\",\n  \"amount_due\": 1200,\n  \"business_name\": \"PayPath Dental\",\n  \"business_email\": \"info@paypath.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/api/create-checkout",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"create-checkout"
+					]
+				}
+			},
+			"response": ["checkout_url": "https://checkout.stripe.com/c/pay/cs_test_a1bO9pFXEGfych4ueKcCdZoHY0CefK0JjqAeCV3qCmMx3FMlbDbpKvdOXd#fidkdWxOYHwnPyd1blpxYHZxWjA0V1JuVzdXVV1iUXZWRFVXTGRpVkxrV3JXNXEwRmdUc31LNDdHfXRjTE13UkE9TE51aF9UTEZrTHxHc1Nif0BMbGlrVDIxYUFHNzB%2Fdm91cF9AQ2BJfE5wNTVOaTY1VmZDQycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl"]
+		}
+	]
+}

@@ -1,14 +1,13 @@
 from flask import Flask
-from config import Config
-from routes.payments import payments_bp
-from routes.invoices import invoice_bp
-from flask_sqlalchemy import SQLAlchemy
+from .config import Config
+from .routes.payments import payments_bp
+from .routes.invoices import invoice_bp
+from .models import db
 
-db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from.object(Config)
+    app.config.from_object(Config)
 
     # register payment route
     app.register_blueprint(payments_bp)
@@ -18,7 +17,13 @@ def create_app():
 
     db.init_app(app)
 
+    @app.route("/")
+    def index():
+        return "PayPath API is running.", 200
+
     return app
 
+
 if __name__ == '__main__':
+    app = create_app()
     app.run(debug=True)
