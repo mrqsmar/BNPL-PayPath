@@ -4,7 +4,7 @@ import stripe
 import logging
 from config import Config
 
-# Secreet key
+# Secret key
 stripe.api_key = Config.STRIPE_API_KEY
 
 # configure logging
@@ -31,7 +31,7 @@ def create_checkout_session(invoice):
             ],
             line_items=[{
                 'price_data': {
-                    'currency': 'usd',
+                    'currency': invoice.get("currency, usd"),
                     'product_data': {
                         'name': invoice['description_of_service']
                     },
@@ -51,6 +51,7 @@ def create_checkout_session(invoice):
             success_url="https://paypath.com/success",
             cancel_url="https://paypath.com/cancel"
         )
+        logger.info(f"Checkout session created for invoice {invoice['invoice_number']}")
         return session.url
     except Exception as e:
         logger.error(f"Stripe error: {e}")
