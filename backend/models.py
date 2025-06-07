@@ -15,5 +15,5 @@ class Invoice(db.Model):
     amount_due = db.Column(db.Float, nullable=False)
     business_name = db.Column(db.String(200))
     business_email = db.Column(db.String(200))
-
     payment_link = db.Column(db.String, nullable=True)
+    paid = db.Column(db.Boolean, default=False)

@@ -1,6 +1,7 @@
 import stripe
 from flask import Blueprint, request, jsonify
-from config import Config
+from ..config import Config
+from ..models import db, Invoice
 
 # creating the Flask Blueprint for webhook, API keys and secrets
 webhook_bp = Blueprint('webhook', __name__)
@@ -12,18 +13,24 @@ endpoint_secret = Config.STRIPE_WEBHOOK_SECRET
 def stripe_webhook():
     payload = request.data
     sig = request.headers.get("Stripe-Signature", "")
-    event = None
 
     try:
-        event = stripe.Webhook.construct_event(payload, sig, event)
+        event = stripe.Webhook.construct_event(payload, sig, endpoint_secret)
     except stripe.error.SignatureVerificationError:
         return jsonify({'error': "Invalid Signature"}, 400)
     except ValueError:
         return jsonify({'error': "Invalid Payload"}, 400)
 
-    # handle event types
+    # handle completed session ending
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-        print(f"Payment succeeded for invoice: {session.get('metadata', {}).get('invoice_number')}")
+        metadata = session.get('metadata', {})
+        invoice_number = metadata.get['invoice_number']
+
+        # if the payment fails
+        if invoice_number is None:
+            return jsonify({'error': "Invoice number is missing"}), 400
+        
+        print(f"Payment succeeded for invoice: {invoice_number}")
 
     return jsonify({'status': 'received'}), 200

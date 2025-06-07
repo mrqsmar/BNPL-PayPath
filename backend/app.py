@@ -2,6 +2,7 @@ from flask import Flask
 from .config import Config
 from .routes.payments import payments_bp
 from .routes.invoices import invoice_bp
+from .routes.webhook import webhook_bp
 from .models import db
 
 
@@ -14,6 +15,9 @@ def create_app():
 
     # register invoices route
     app.register_blueprint(invoice_bp)
+
+    # register webhook route
+    app.register_blueprint(webhook_bp)
 
     db.init_app(app)
 
