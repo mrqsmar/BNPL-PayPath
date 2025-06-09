@@ -26,3 +26,28 @@ def fetch_invoice_number(invoice_number):
         return jsonify({
             "error": "Invoice is not found"
         }), 404
+
+
+# gets invoices whether paid or unpaid
+@invoice_bp.route('/api/invoices/<string:paid>', methods=['GET'])
+def get_invoices_status(paid):
+    # check if the status is true or false
+    if paid.lower() == "True":
+        invoice_status = True
+    if paid.lower() == "False":
+        invoice_status = False
+    else:
+        return jsonify({'error': 'invalid paid code, use true or false'}), 400
+    
+    invoices = Invoice.query.filter_by(paid=invoice_status).first()
+
+    result = []
+    for invoice in invoices:
+        result.append({
+            "invoice_number": invoice.invoice_number,
+            "customer_name": invoice.customer_name,
+            "amount_due": invoice.amount_due,
+            "paid": invoice.paid
+        })
+
+    return jsonify(result), 200
