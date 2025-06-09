@@ -21,16 +21,16 @@ def stripe_webhook():
     except ValueError:
         return jsonify({'error': "Invalid Payload"}, 400)
 
-    # handle completed session ending
+    # handle completed session ending 
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
         metadata = session.get('metadata', {})
         invoice_number = metadata.get['invoice_number']
 
-        # if the payment fails
+        # if the invoice number is missing, it rights back as an error
         if invoice_number is None:
             return jsonify({'error': "Invoice number is missing"}), 400
-        
+
         print(f"Payment succeeded for invoice: {invoice_number}")
 
     return jsonify({'status': 'received'}), 200
