@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum InvoiceStatus {
+  PENDING
+  SENT
+  PAID
+  FAILED
+}
+
+enum MessageChannel {
+  EMAIL
+  SMS
+}
+
+enum MessageStatus {
+  SENT
+  FAILED
+  DELIVERED
+}
+
+model Invoice {
+  id                   Int           @id @default(autoincrement())
+  token                String        @unique @default(uuid()) @db.Uuid
+  customerName         String
+  customerEmail        String
+  customerPhone        String?
+  amountDue            Decimal       @db.Decimal(10, 2)
+  invoiceNumber        String
+  descriptionOfService String
+  businessName         String
+  businessEmail        String
+  status               InvoiceStatus @default(PENDING)
+  uploadBatchId        Int?
+  uploadBatch          UploadBatch?  @relation(fields: [uploadBatchId], references: [id])
+  messages             MessageLog[]
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+}
+
+model UploadBatch {
+  id           Int       @id @default(autoincrement())
+  filename     String
+  uploadedAt   DateTime  @default(now())
+  invoiceCount Int
+  invoices     Invoice[]
+}
+
+model MessageLog {
+  id                Int            @id @default(autoincrement())
+  invoiceId         Int
+  invoice           Invoice        @relation(fields: [invoiceId], references: [id])
+  channel           MessageChannel
+  status            MessageStatus
+  sentAt            DateTime       @default(now())
+  providerMessageId String?
+}
