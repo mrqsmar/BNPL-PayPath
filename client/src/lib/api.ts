@@ -57,6 +57,35 @@ export interface UploadError {
   rowErrors?: RowError[];
 }
 
+export interface MessageLog {
+  id: number;
+  invoiceId: number;
+  channel: "EMAIL" | "SMS";
+  status: "SENT" | "FAILED" | "DELIVERED";
+  sentAt: string;
+  providerMessageId: string | null;
+}
+
+export interface SendBatchResult {
+  sent: number;
+  failed: number;
+  errors: { invoiceId: number; invoiceNumber: string; error: string }[];
+  message?: string;
+}
+
+export interface ResendResult {
+  success: boolean;
+  email: { success: boolean; error?: string };
+  sms: { success: boolean; error?: string };
+  status: string;
+}
+
+export interface MessagePreview {
+  subject: string;
+  html: string;
+  sms: string | null;
+}
+
 export const api = {
   login(username: string, password: string) {
     return request<{ success: boolean }>("/auth/login", {
@@ -83,6 +112,26 @@ export const api = {
 
   getBatch(id: number) {
     return request<UploadBatch & { invoices: Invoice[] }>(`/admin/batches/${id}`);
+  },
+
+  sendBatchMessages(batchId: number) {
+    return request<SendBatchResult>(`/admin/batches/${batchId}/send`, {
+      method: "POST",
+    });
+  },
+
+  resendInvoice(invoiceId: number) {
+    return request<ResendResult>(`/admin/invoices/${invoiceId}/resend`, {
+      method: "POST",
+    });
+  },
+
+  getInvoiceMessages(invoiceId: number) {
+    return request<MessageLog[]>(`/admin/invoices/${invoiceId}/messages`);
+  },
+
+  getMessagePreview(invoiceId: number) {
+    return request<MessagePreview>(`/admin/invoices/${invoiceId}/preview`);
   },
 
   async uploadCsv(file: File): Promise<UploadResult> {
