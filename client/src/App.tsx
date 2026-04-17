@@ -6,6 +6,8 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import InvoicesPage from "./pages/InvoicesPage";
 import UploadPage from "./pages/UploadPage";
+import BatchesPage from "./pages/BatchesPage";
+import BatchDetailPage from "./pages/BatchDetailPage";
 
 export default function App() {
   return (
@@ -20,6 +22,8 @@ export default function App() {
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="invoices" element={<InvoicesPage />} />
           <Route path="upload" element={<UploadPage />} />
+          <Route path="batches" element={<BatchesPage />} />
+          <Route path="batches/:id" element={<BatchDetailPage />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/admin/login" replace />} />

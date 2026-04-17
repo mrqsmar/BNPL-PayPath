@@ -5,6 +5,7 @@ const navItems = [
   { to: "/admin/dashboard", label: "Dashboard" },
   { to: "/admin/invoices", label: "Invoices" },
   { to: "/admin/upload", label: "Upload CSV" },
+  { to: "/admin/batches", label: "Batches" },
 ];
 
 export default function AdminLayout() {

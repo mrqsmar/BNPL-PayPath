@@ -8,6 +8,7 @@ import { PrismaClient } from "@prisma/client";
 import healthRouter from "./routes/health";
 import authRouter from "./routes/auth";
 import adminRouter from "./routes/admin";
+import uploadRouter from "./routes/upload";
 
 export const prisma = new PrismaClient();
 
@@ -39,6 +40,7 @@ app.use(
 app.use("/api/health", healthRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/admin", uploadRouter);
 
 app.listen(PORT, () => {
   console.log(`PayPath server running on port ${PORT}`);

@@ -14,14 +14,6 @@ router.get("/invoices", async (_req: Request, res: Response) => {
   res.json(invoices);
 });
 
-router.get("/batches", async (_req: Request, res: Response) => {
-  const batches = await prisma.uploadBatch.findMany({
-    orderBy: { uploadedAt: "desc" },
-    include: { _count: { select: { invoices: true } } },
-  });
-  res.json(batches);
-});
-
 router.get("/invoices/:id", async (req: Request<{ id: string }>, res: Response) => {
   const invoice = await prisma.invoice.findUnique({
     where: { id: parseInt(req.params.id as string) },

@@ -1,22 +1,11 @@
 import { useEffect, useState } from "react";
-import { api } from "../lib/api";
-
-interface Invoice {
-  id: number;
-  invoiceNumber: string;
-  customerName: string;
-  customerEmail: string;
-  businessName: string;
-  amountDue: string;
-  status: string;
-  createdAt: string;
-}
+import { api, Invoice } from "../lib/api";
 
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
 
   useEffect(() => {
-    api.getInvoices().then((data) => setInvoices(data as Invoice[]));
+    api.getInvoices().then(setInvoices);
   }, []);
 
   const statusColor: Record<string, string> = {
