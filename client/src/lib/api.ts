@@ -86,6 +86,23 @@ export interface MessagePreview {
   sms: string | null;
 }
 
+export interface DashboardStats {
+  invoices: {
+    total: number;
+    PENDING: number;
+    SENT: number;
+    PAID: number;
+    FAILED: number;
+  };
+  revenue: {
+    totalDue: number;
+    totalCollected: number;
+    collectionRate: number;
+  };
+  messages: Record<string, number>;
+  batches: number;
+}
+
 export interface PublicInvoice {
   customerName: string;
   businessName: string;
@@ -111,8 +128,17 @@ export const api = {
     return request<{ isAdmin: boolean }>("/auth/me");
   },
 
-  getInvoices() {
-    return request<Invoice[]>("/admin/invoices");
+  getStats() {
+    return request<DashboardStats>("/admin/stats");
+  },
+
+  getInvoices(status?: string) {
+    const qs = status ? `?status=${status}` : "";
+    return request<Invoice[]>(`/admin/invoices${qs}`);
+  },
+
+  exportCsvUrl() {
+    return `${API_BASE}/admin/export/csv`;
   },
 
   getBatches() {
