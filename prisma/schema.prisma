@@ -36,8 +36,9 @@ model Invoice {
   descriptionOfService String
   businessName         String
   businessEmail        String
-  status               InvoiceStatus @default(PENDING)
-  uploadBatchId        Int?
+  status                 InvoiceStatus @default(PENDING)
+  stripePaymentIntentId  String?
+  uploadBatchId          Int?
   uploadBatch          UploadBatch?  @relation(fields: [uploadBatchId], references: [id])
   messages             MessageLog[]
   createdAt            DateTime      @default(now())

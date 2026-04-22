@@ -10,6 +10,8 @@ import authRouter from "./routes/auth";
 import adminRouter from "./routes/admin";
 import uploadRouter from "./routes/upload";
 import messagesRouter from "./routes/messages";
+import invoiceRouter from "./routes/invoice";
+import webhookRouter from "./routes/webhook";
 
 export const prisma = new PrismaClient();
 
@@ -22,6 +24,9 @@ app.use(
     credentials: true,
   })
 );
+
+// Webhook must receive raw body for Stripe signature verification — register before express.json()
+app.use("/api/webhooks", express.raw({ type: "application/json" }), webhookRouter);
 
 app.use(express.json());
 
@@ -43,6 +48,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/admin", uploadRouter);
 app.use("/api/admin", messagesRouter);
+app.use("/api/invoice", invoiceRouter);
 
 app.listen(PORT, () => {
   console.log(`PayPath server running on port ${PORT}`);

@@ -86,6 +86,15 @@ export interface MessagePreview {
   sms: string | null;
 }
 
+export interface PublicInvoice {
+  customerName: string;
+  businessName: string;
+  invoiceNumber: string;
+  descriptionOfService: string;
+  amountDue: number;
+  status: string;
+}
+
 export const api = {
   login(username: string, password: string) {
     return request<{ success: boolean }>("/auth/login", {
@@ -132,6 +141,16 @@ export const api = {
 
   getMessagePreview(invoiceId: number) {
     return request<MessagePreview>(`/admin/invoices/${invoiceId}/preview`);
+  },
+
+  getPublicInvoice(token: string) {
+    return request<PublicInvoice>(`/invoice/${token}`);
+  },
+
+  createPaymentIntent(token: string) {
+    return request<{ clientSecret: string }>(`/invoice/${token}/payment-intent`, {
+      method: "POST",
+    });
   },
 
   async uploadCsv(file: File): Promise<UploadResult> {

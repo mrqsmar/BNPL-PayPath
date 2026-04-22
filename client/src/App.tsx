@@ -8,11 +8,17 @@ import InvoicesPage from "./pages/InvoicesPage";
 import UploadPage from "./pages/UploadPage";
 import BatchesPage from "./pages/BatchesPage";
 import BatchDetailPage from "./pages/BatchDetailPage";
+import CheckoutPage from "./pages/CheckoutPage";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 
 export default function App() {
   return (
     <AuthProvider>
       <Routes>
+        {/* Public payment pages — no nav/layout wrapper */}
+        <Route path="/pay/:token" element={<CheckoutPage />} />
+        <Route path="/pay/:token/success" element={<PaymentSuccessPage />} />
+
         <Route element={<PublicLayout />}>
           <Route path="/admin/login" element={<LoginPage />} />
         </Route>
